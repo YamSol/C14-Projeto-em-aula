@@ -43,15 +43,6 @@ npm install
 
   Executa o build compilado.
 
-## Estrutura do Projeto
-
-```
-src/
-  index.ts        # Ponto de entrada da aplicação
-package.json
-tsconfig.json
-```
-
 ## Configuração
 
 As configurações (porta, chaves, etc.) devem ser definidas via variáveis de ambiente ou arquivo `.env`.
