@@ -12,6 +12,10 @@ app.get("/", (req, res) => {
   res.json({ message: "Vital Sync Backend funcionando" });
 });
 
+import { setupSwagger } from './swagger';
+
+setupSwagger(app);
+
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
