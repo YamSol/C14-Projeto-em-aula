@@ -8,17 +8,20 @@
     "dev": "ts-node src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "build-all": "npm run install-deps && npm run build"
+    "build-all": "npm run install-deps && npm run build",
+    "db:seed": "ts-node src/scripts/createUser.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.14.0",
-    "express": "^4.19.2",
+    "bcrypt": "^6.0.0",
+    "express": "^4.21.2",
     "prisma": "^6.14.0",
     "redis": "^5.8.0",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
-    "@types/express": "^4.17.21",
+    "@types/bcrypt": "^6.0.0",
+    "@types/express": "^4.17.23",
     "@types/node": "^20.19.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
