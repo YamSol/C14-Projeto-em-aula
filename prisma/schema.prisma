@@ -16,8 +16,48 @@ datasource db {
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
-  name      String?
+  name      String
   password  String
+  role      String   @default("doctor") // doctor, admin
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Patient {
+  id                   String            @id @default(cuid())
+  name                 String
+  age                  Int
+  condition            String
+  photoUrl             String?
+  transmissionsCount   Int               @default(0)
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+  lastTransmission     DateTime          @default(now())
+  
+  // Current vital signs (latest reading)
+  currentHeartRate     Int?
+  currentOxygenSat     Int?
+  currentSystolic      Int?
+  currentDiastolic     Int?
+  currentTemperature   Float?
+  
+  // Vital signs history
+  vitalSigns           VitalSigns[]
+  
+  @@map("patients")
+}
+
+model VitalSigns {
+  id           String   @id @default(cuid())
+  patientId    String
+  heartRate    Int      // BPM
+  oxygenSat    Int      // %
+  systolic     Int      // mmHg
+  diastolic    Int      // mmHg
+  temperature  Float    // Celsius
+  timestamp    DateTime @default(now())
+  
+  patient      Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  
+  @@map("vital_signs")
 }
