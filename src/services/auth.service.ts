@@ -5,6 +5,7 @@ import type { AuthUser, LoginResponse } from '../types';
 
 export class AuthService {
   private userRepository: UserRepository;
+  private saltRounds = 12; // More secure salt rounds
 
   constructor() {
     this.userRepository = new UserRepository();
@@ -26,16 +27,44 @@ export class AuthService {
     // Generate JWT token
     const token = this.generateToken(user.id);
 
+    // Convert User to AuthUser
     const authUser: AuthUser = {
       id: user.id,
       email: user.email,
-      name: user.name || 'Usuario',
-      role: user.role || 'doctor'
+      name: user.name,
+      role: user.role
     };
 
     return {
       user: authUser,
       token
+    };
+  }
+
+  async hashPassword(password: string): Promise<string> {
+    // Force bcrypt to use $2b$ format
+    return bcrypt.hash(password, this.saltRounds);
+  }
+
+  async createUser(userData: {
+    email: string;
+    name: string;
+    password: string;
+    role?: string;
+  }): Promise<AuthUser> {
+    // Hash the password with $2b$ format
+    const hashedPassword = await this.hashPassword(userData.password);
+    
+    const user = await this.userRepository.create({
+      ...userData,
+      password: hashedPassword
+    });
+
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role
     };
   }
 
@@ -62,8 +91,8 @@ export class AuthService {
       return {
         id: user.id,
         email: user.email,
-        name: user.name || 'Usuario',
-        role: user.role || 'doctor'
+        name: user.name,
+        role: user.role
       };
     } catch (error) {
       return null;
