@@ -94,3 +94,41 @@ A autenticação é baseada em rotas seguras. Para acessar os endpoints protegid
 ## Configuração
 
 As configurações (porta, chaves, etc.) devem ser definidas via variáveis de ambiente ou arquivo `.env`.
+
+---
+
+## Como rodar em um novo computador
+
+1. **Clone o repositório:**
+   ```bash
+   git clone <url-do-repositorio>
+   cd VitalSync-Backend
+   ```
+
+2. **Instale as dependências:**
+   ```bash
+   npm install
+   ```
+
+3. **Configure o ambiente:**
+   - Copie `.env.example` para `.env` e ajuste as variáveis se necessário.
+
+4. **Gere o banco de dados e o client do Prisma:**
+   ```bash
+   npx prisma generate
+   npx prisma migrate dev
+   ```
+
+5. **(Opcional) Crie um usuário de teste:**
+   ```bash
+   npx ts-node src/scripts/createTestUser.ts
+   ```
+
+6. **Inicie o servidor em modo desenvolvimento:**
+   ```bash
+   npm run dev
+   ```
+
+7. **Acesse a API:**
+   - API: [http://localhost:3001](http://localhost:3001)
+   - Swagger: [http://localhost:3001/api-docs](http://localhost:3001/api-docs)
