@@ -9,7 +9,12 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "build-all": "npm run install-deps && npm run build",
-    "db:seed": "ts-node src/scripts/createUser.ts"
+    "db:seed": "ts-node src/scripts/createUser.ts",
+    "db:demo": "ts-node src/scripts/createDemoData.ts",
+    "db:migrate": "npx prisma migrate dev",
+    "db:generate": "npx prisma generate",
+    "db:push": "npx prisma db push",
+    "db:studio": "npx prisma studio"
   },
   "dependencies": {
     "@prisma/client": "^6.14.0",
