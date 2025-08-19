@@ -11,16 +11,16 @@ export class AuthService {
     this.userRepository = new UserRepository();
   }
 
-  async login(email: string, password: string): Promise<LoginResponse | null> {
+  async login(email: string, senha: string): Promise<LoginResponse | null> {
     const user = await this.userRepository.findByEmail(email);
 
     if (!user) {
       return null;
     }
 
-    const passwordMatch = await bcrypt.compare(password, user.password);
+    const passwordMatch = await bcrypt.compare(senha, user.password);
 
-    console.log('Password', password); // Debugging line
+    console.log('Password', senha); // Debugging line
     if (!passwordMatch) {
       return null;
     }
