@@ -11,8 +11,14 @@ export const authenticateToken = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
+  // Tenta obter o token de várias fontes
+  // 1. Do cookie HTTP-only
+  // 2. Do header Authorization
+  const tokenFromCookie = req.cookies?.vitalsync_token;
   const authHeader = req.headers.authorization;
-  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+  const tokenFromHeader = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+  
+  const token = tokenFromCookie || tokenFromHeader;
 
   if (!token) {
     res.status(401).json({

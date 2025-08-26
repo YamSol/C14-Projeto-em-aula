@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
+import cookieParser from 'cookie-parser';
 import authRouter from './routes/auth.routes';
 import patientRouter from './routes/patient.routes';
 
@@ -10,9 +11,15 @@ const PORT = process.env.PORT || 3001;
 // Middleware
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:5173', // Vite default port
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+// Para lidar com cookies, precisamos definir o trust proxy
+app.set('trust proxy', 1);
+
+app.use(cookieParser()); // Para ler cookies
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

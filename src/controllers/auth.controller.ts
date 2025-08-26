@@ -37,11 +37,23 @@ export class AuthController {
         return;
       }
 
+      // Set cookie com o token JWT
+      const isProduction = process.env.NODE_ENV === 'production';
+      
+      res.cookie('vitalsync_token', result.token, {
+        httpOnly: true,
+        secure: isProduction, // true apenas em produção (HTTPS)
+        sameSite: isProduction ? 'strict' : 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 dias
+        path: '/',
+      });
+
+      // Retorna apenas os dados do usuário, não o token
       res.status(200).json({
         success: true,
         message: 'Login realizado com sucesso',
-        data: result
-      } as ApiResponse<LoginResponse>);
+        data: { user: result.user }
+      } as ApiResponse<Omit<LoginResponse, 'token'>>);
     } catch (error) {
       console.error('Login error:', error);
       res.status(500).json({
@@ -54,7 +66,15 @@ export class AuthController {
 
   async logout(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      // In a real app, you might want to blacklist the token
+      // Remove o cookie do token JWT
+      const isProduction = process.env.NODE_ENV === 'production';
+      
+      res.clearCookie('vitalsync_token', {
+        httpOnly: true,
+        secure: isProduction, // true apenas em produção (HTTPS)
+        sameSite: isProduction ? 'strict' : 'lax',
+        path: '/',
+      });
       res.status(200).json({
         success: true,
         message: 'Logout realizado com sucesso',
