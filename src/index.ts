@@ -4,6 +4,7 @@ import path from 'path';
 import cookieParser from 'cookie-parser';
 import authRouter from './routes/auth.routes';
 import patientRouter from './routes/patient.routes';
+import gatewayRouter from './routes/gateway.routes';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -13,7 +14,7 @@ app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:5173', // Vite default port
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key']
 }));
 
 // Para lidar com cookies, precisamos definir o trust proxy
@@ -29,6 +30,7 @@ app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 // Routes
 app.use('/auth', authRouter);
 app.use('/patients', patientRouter);
+app.use('/gateway', gatewayRouter);
 
 // Health check
 app.get('/', (req, res) => {
