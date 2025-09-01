@@ -1,96 +1,161 @@
 # Vital Sync Backend
 
-Backend para requisições HTTP do projeto **Vital Sync** (Monitoramento Remoto de Sinais Vitais).
-Implementado em **Node.js** com **TypeScript**.
+Backend for HTTP requests of the **Vital Sync** project (Remote Vital Signs Monitoring).
+Built with **Node.js** and **TypeScript**.
 
-## Features
+---
 
-*   **Autenticação de Usuários:** Sistema de login seguro para acesso à plataforma.
-*   **Banco de Dados com Prisma:** Utiliza o ORM Prisma para uma interação simplificada e segura com o banco de dados SQLite.
-*   **Estrutura MVC:** Código organizado seguindo o padrão Model-View-Controller para maior clareza e manutenibilidade.
+## 🚀 Features
 
-## Requisitos
+* **User Authentication:** Secure login system for platform access.
+* **Database with Prisma:** Uses **Prisma ORM** with **SQLite** for simple and safe database interaction.
+* **MVC Structure:** Clean and maintainable code following *Model-View-Controller* pattern.
 
-*   Node.js 18+
-*   npm 9+ (ou yarn/pnpm)
-*   TypeScript
+---
 
-## Instalação
+## 📋 Requirements
 
-1.  **Clonar o repositório:**
+* Node.js **18+**
+* npm **9+** (or **yarn/pnpm**)
+* TypeScript
 
-    ```bash
-    git clone https://github.com/seu-usuario/vital-sync-backend.git
-    cd vital-sync-backend
-    ```
+---
 
-2.  **Instalar as dependências:**
+## ⚙️ Installation
 
-    ```bash
-    npm install
-    ```
+1. **Clone the repository**
 
-3.  **Configurar o banco de dados:**
+   ```bash
+   git clone https://github.com/your-username/vital-sync-backend.git
+   cd vital-sync-backend
+   ```
 
-    Crie uma cópia do arquivo `.env.example` e renomeie para `.env`. O arquivo já está configurado para usar o banco de dados SQLite.
+2. **Install dependencies**
 
-    Execute as migrações do Prisma para criar as tabelas do banco de dados:
+   ```bash
+   npm install
+   ```
 
-    ```bash
-    npx prisma migrate dev
-    ```
+3. **Setup database**
 
-## Scripts
+   * Copy `.env.example` to `.env`
+   * Defaults to **SQLite**
 
-*   **Desenvolvimento:**
+   Run migrations:
 
-    ```bash
-    npm run dev
-    ```
+   ```bash
+   npx prisma migrate dev
+   ```
 
-    Executa o servidor usando `ts-node` com recarga automática.
+---
 
-*   **Build:**
+## 📜 Available Scripts
 
-    ```bash
-    npm run build
-    ```
+* **Development**
 
-    Compila os arquivos TypeScript para JavaScript na pasta `dist/`.
+  ```bash
+  npm run dev
+  ```
 
-*   **Produção:**
+  Runs the server with hot reload (`ts-node`).
 
-    ```bash
-    npm start
-    ```
+* **Build**
 
-    Executa o build compilado.
+  ```bash
+  npm run build
+  ```
 
-*   **Criar um novo usuário:**
+  Compiles TypeScript into JavaScript (`dist/`).
 
-    ```bash
-    npm run user:create
-    ```
+* **Production**
 
-    Executa um script para criar um novo usuário no banco de dados.
+  ```bash
+  npm start
+  ```
 
-## Banco de Dados
+  Runs the compiled build.
 
-O projeto utiliza **SQLite** como banco de dados, gerenciado pelo **Prisma ORM**.
+* **Create a new user**
 
-*   O schema do banco de dados está definido em `prisma/schema.prisma`.
-*   As migrações são salvas na pasta `prisma/migrations`.
+  ```bash
+  npm run user:create
+  ```
 
-Para gerar um novo migration após alterar o `schema.prisma`, execute:
+  Executes script to create a user in the database.
+
+---
+
+## 🗄️ Database
+
+* Database: **SQLite**
+* ORM: **Prisma**
+
+📂 Structure:
+
+* `prisma/schema.prisma` → Schema definition
+* `prisma/migrations/` → Versioned migrations
+
+Generate a new migration:
 
 ```bash
-npx prisma migrate dev --name "nome-da-migration"
+npx prisma migrate dev --name "migration-name"
 ```
 
-## Autenticação
+---
 
-A autenticação é baseada em rotas seguras. Para acessar os endpoints protegidos, é necessário obter um token de acesso.
+## 🔑 Authentication
 
-## Configuração
+* Based on **JWT**.
+* Protected routes require a valid **access token**.
 
-As configurações (porta, chaves, etc.) devem ser definidas via variáveis de ambiente ou arquivo `.env`.
+---
+
+## ⚡ Configuration
+
+* Configurations (port, keys, etc.) are defined via **environment variables** (`.env`).
+
+---
+
+## 🖥️ Running on a New Machine
+
+1. **Clone the repository**
+
+   ```bash
+   git clone <repo-url>
+   cd VitalSync-Backend
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Setup environment**
+
+   * Copy `.env.example` → `.env`
+   * Adjust variables as needed
+
+4. **Generate Prisma Client & run migrations**
+
+   ```bash
+   npx prisma generate
+   npx prisma migrate dev
+   ```
+
+5. **(Optional) Create a test user**
+
+   ```bash
+   npx ts-node src/scripts/createTestUser.ts
+   ```
+
+6. **Start the server in development mode**
+
+   ```bash
+   npm run dev
+   ```
+
+7. **Access the API**
+
+   * API: [http://localhost:3001](http://localhost:3001)
+   * Swagger: [http://localhost:3001/api-docs](http://localhost:3001/api-docs)
