@@ -3,9 +3,17 @@ import bcrypt from 'bcrypt';
 
 describe('AuthService.login', () => {
     let authService: AuthService;
+    let userRepository: any;
 
     beforeEach(() => {
+        // Mock do UserRepository
+        userRepository = {
+            findByEmail: jest.fn().mockResolvedValue(null)
+        };
+
         authService = new AuthService();
+        // @ts-ignore - ignorando erro de tipo para poder substituir a instância
+        authService.userRepository = userRepository;
     });
 
     describe('Validação de entrada', () => {
@@ -72,15 +80,15 @@ describe('AuthService.login', () => {
         it('deve aceitar senha com tamanho mínimo', async () => {
             const senha = '123456'; // assumindo mínimo de 6 caracteres
             const result = await authService.login('email@teste.com', senha);
-            // O resultado pode ser null por não encontrar o usuário, mas não deve lançar erro
-            expect(() => result).not.toThrow();
+            // Apenas verificamos se retorna null por não encontrar o usuário
+            expect(result).toBeNull();
         });
 
         it('deve aceitar senha com tamanho máximo', async () => {
             const senha = 'a'.repeat(72); // limite máximo do bcrypt
             const result = await authService.login('email@teste.com', senha);
-            // O resultado pode ser null por não encontrar o usuário, mas não deve lançar erro
-            expect(() => result).not.toThrow();
+            // Apenas verificamos se retorna null por não encontrar o usuário
+            expect(result).toBeNull();
         });
 
         it('deve rejeitar senhas muito longas', async () => {
@@ -93,14 +101,14 @@ describe('AuthService.login', () => {
     describe('Tratamento de erros', () => {
         it('deve lidar com caracteres especiais no email', async () => {
             const result = await authService.login('user+test@domain.com', 'senha123');
-            // O resultado pode ser null por não encontrar o usuário, mas não deve lançar erro
-            expect(() => result).not.toThrow();
+            // Apenas verificamos se retorna null por não encontrar o usuário
+            expect(result).toBeNull();
         });
 
         it('deve lidar com caracteres especiais na senha', async () => {
             const result = await authService.login('email@teste.com', 'senha!@#$%¨&*()');
-            // O resultado pode ser null por não encontrar o usuário, mas não deve lançar erro
-            expect(() => result).not.toThrow();
+            // Apenas verificamos se retorna null por não encontrar o usuário
+            expect(result).toBeNull();
         });
 
         it('deve lidar com inputs muito longos', async () => {
