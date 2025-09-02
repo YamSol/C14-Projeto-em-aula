@@ -44,7 +44,11 @@ describe('AuthController.login', () => {
             await authController.login(req, res as Response);
 
             expect(res.status).toHaveBeenCalledWith(400);
-            expect(res.send).toHaveBeenCalledWith({ message: 'Email and password are required' });
+            expect(res.json).toHaveBeenCalledWith({
+                success: false,
+                message: 'Email e senha são obrigatórios',
+                data: null
+            });
         });
 
         it('deve rejeitar requisição sem senha', async () => {
@@ -58,7 +62,11 @@ describe('AuthController.login', () => {
             await authController.login(req, res as Response);
 
             expect(res.status).toHaveBeenCalledWith(400);
-            expect(res.send).toHaveBeenCalledWith({ message: 'Email and password are required' });
+            expect(res.json).toHaveBeenCalledWith({
+                success: false,
+                message: 'Email e senha são obrigatórios',
+                data: null
+            });
         });
     });
 
@@ -76,7 +84,11 @@ describe('AuthController.login', () => {
 
             // Como não temos um usuário real no banco, esperamos 401
             expect(res.status).toHaveBeenCalledWith(401);
-            expect(res.send).toHaveBeenCalledWith({ message: 'Invalid credentials' });
+            expect(res.json).toHaveBeenCalledWith({
+                success: false,
+                message: 'Credenciais inválidas',
+                data: null
+            });
         });
 
         it('deve lidar com campos extras no body', async () => {
@@ -93,7 +105,11 @@ describe('AuthController.login', () => {
 
             // O controller deve ignorar campos extras
             expect(res.status).toHaveBeenCalledWith(401);
-            expect(res.send).toHaveBeenCalledWith({ message: 'Invalid credentials' });
+            expect(res.json).toHaveBeenCalledWith({
+                success: false,
+                message: 'Credenciais inválidas',
+                data: null
+            });
         });
     });
 
@@ -110,7 +126,11 @@ describe('AuthController.login', () => {
             await authController.login(req, res as Response);
 
             expect(res.status).toHaveBeenCalledWith(401);
-            expect(res.send).toHaveBeenCalledWith({ message: 'Invalid credentials' });
+            expect(res.json).toHaveBeenCalledWith({
+                success: false,
+                message: 'Credenciais inválidas',
+                data: null
+            });
         });
 
         it('deve rejeitar senha como número', async () => {
@@ -138,9 +158,11 @@ describe('AuthController.login', () => {
 
             await authController.login(req, res as Response);
 
-            expect(res.send).toHaveBeenCalledWith(
+            expect(res.json).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    message: expect.any(String)
+                    success: false,
+                    message: expect.any(String),
+                    data: null
                 })
             );
         });
@@ -155,14 +177,18 @@ describe('AuthController.login', () => {
             await authController.login(req2, res2 as Response);
 
             // Ambas as respostas devem ter o mesmo formato
-            expect(res1.send).toHaveBeenCalledWith(
+            expect(res1.json).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    message: expect.any(String)
+                    success: false,
+                    message: expect.any(String),
+                    data: null
                 })
             );
-            expect(res2.send).toHaveBeenCalledWith(
+            expect(res2.json).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    message: expect.any(String)
+                    success: false,
+                    message: expect.any(String),
+                    data: null
                 })
             );
         });
