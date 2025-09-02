@@ -15,6 +15,16 @@ export class AuthController {
 
   async login(req: Request, res: Response): Promise<void> {
     try {
+      // Se não tem body ou não é objeto
+      if (!req.body || typeof req.body !== 'object') {
+        res.status(400).json({
+          success: false,
+          message: 'Email e senha são obrigatórios',
+          data: null
+        } as ApiResponse);
+        return;
+      }
+
       const { email, password }: LoginRequest = req.body;
 
       if (!email || !password) {
@@ -26,6 +36,8 @@ export class AuthController {
         return;
       }
 
+      // Aqui o service já faz todas as validações necessárias
+      // e não lança exceções, apenas retorna null
       const result = await this.authService.login(email, password);
 
       if (!result) {
@@ -54,7 +66,10 @@ export class AuthController {
         message: 'Login realizado com sucesso',
         data: { user: result.user }
       } as ApiResponse<Omit<LoginResponse, 'token'>>);
-    } catch (error) {
+    } 
+    catch (error) {
+      // Como o service não lança exceções relacionadas a validação,
+      // qualquer erro aqui é realmente um erro interno
       console.error('Login error:', error);
       res.status(500).json({
         success: false,
