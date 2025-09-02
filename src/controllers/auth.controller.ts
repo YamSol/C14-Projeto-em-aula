@@ -54,7 +54,15 @@ export class AuthController {
         message: 'Login realizado com sucesso',
         data: { user: result.user }
       } as ApiResponse<Omit<LoginResponse, 'token'>>);
-    } catch (error) {
+    } 
+    catch (error) {
+      if (error instanceof TypeError) {
+        res.status(401).json({
+          success: false,
+          message: 'Credenciais inválidas',
+          data: null
+        } as ApiResponse);
+      }
       console.error('Login error:', error);
       res.status(500).json({
         success: false,

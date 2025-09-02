@@ -13,16 +13,18 @@ export class AuthService {
 
 
   async login(email: string, pass: string): Promise<LoginResponse | null> {
-  const user = await this.userRepository.findByEmail(email);
+    if (!email || !pass) {
+      return null;
+    }
+
+    const user = await this.userRepository.findByEmail(email);
 
     if (!user) {
       return null;
     }
 
-
     const passwordMatch = await bcrypt.compare(pass, user.password);
 
-    console.log('Password', pass); // Debugging line
     if (!passwordMatch) {
       return null;
     }
@@ -45,7 +47,6 @@ export class AuthService {
   }
 
   async hashPassword(password: string): Promise<string> {
-    // Force bcrypt to use $2b$ format
     return bcrypt.hash(password, this.saltRounds);
   }
 
@@ -55,7 +56,6 @@ export class AuthService {
     password: string;
     role?: string;
   }): Promise<AuthUser> {
-    // Hash the password with $2b$ format
     const hashedPassword = await this.hashPassword(userData.password);
     
     const user = await this.userRepository.create({
