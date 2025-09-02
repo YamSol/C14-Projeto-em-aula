@@ -1,40 +1,12 @@
 import { AuthController } from '../controllers/auth.controller';
-import { AuthService } from '../services/auth.service';
 import { Request, Response } from 'express';
 
 describe('AuthController.login', () => {
     let authController: AuthController;
-    let authService: AuthService;
 
     beforeEach(() => {
-        // Mock do UserRepository
-        const mockUserRepository = {
-            findByEmail: jest.fn().mockResolvedValue(null)
-        };
-
-        // Mock do AuthService
-        authService = new AuthService();
-        jest.spyOn(authService, 'login').mockImplementation(async (email, password) => {
-            if (!email || !password) {
-                return null;
-            }
-            if (typeof email !== 'string') {
-                return null;
-            }
-            if (!email.includes('@')) {
-                return null;
-            }
-            if (email.length > 255) {
-                return null;
-            }
-            // Simulando que não encontrou o usuário
-            return null;
-        });
-
-        // Criando o controller com o serviço mockado
+        // Criar uma nova instância do controller para cada teste
         authController = new AuthController();
-        // @ts-ignore - ignorando erro de tipo para poder substituir a instância
-        authController.authService = authService;
     });
 
     // Função auxiliar para criar uma resposta simulada

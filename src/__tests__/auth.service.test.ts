@@ -3,33 +3,26 @@ import bcrypt from 'bcrypt';
 
 describe('AuthService.login', () => {
     let authService: AuthService;
-    let userRepository: any;
 
     beforeEach(() => {
-        // Mock do UserRepository
-        userRepository = {
-            findByEmail: jest.fn().mockResolvedValue(null)
-        };
-
+        // Criar uma nova instância do service para cada teste
         authService = new AuthService();
-        // @ts-ignore - ignorando erro de tipo para poder substituir a instância
-        authService.userRepository = userRepository;
     });
 
     describe('Validação de entrada', () => {
-        it('deve retornar null quando email está vazio', async () => {
-            const result = await authService.login('', 'qualquer_senha');
-            expect(result).toBeNull();
+        it('deve validar quando email está vazio', () => {
+            const error = authService.validateLoginInput('', 'qualquer_senha');
+            expect(error).toBe('Email e senha são obrigatórios');
         });
 
-        it('deve retornar null quando senha está vazia', async () => {
-            const result = await authService.login('email@teste.com', '');
-            expect(result).toBeNull();
+        it('deve validar quando senha está vazia', () => {
+            const error = authService.validateLoginInput('email@teste.com', '');
+            expect(error).toBe('Email e senha são obrigatórios');
         });
 
-        it('deve retornar null quando email é inválido', async () => {
-            const result = await authService.login('emailinvalido', 'senha123');
-            expect(result).toBeNull();
+        it('deve validar quando email é inválido', () => {
+            const error = authService.validateLoginInput('emailinvalido', 'senha123');
+            expect(error).toBe('Formato de email inválido');
         });
     });
 
@@ -58,63 +51,59 @@ describe('AuthService.login', () => {
     });
 
     describe('Formato dos dados', () => {
-        it('deve lidar com emails em diferentes casos', async () => {
+        it('deve aceitar emails em diferentes casos', () => {
             const emailMaiusculo = 'EMAIL@TESTE.COM';
             const emailMinusculo = 'email@teste.com';
             
-            const resultMaiusculo = await authService.login(emailMaiusculo, 'senha123');
-            const resultMinusculo = await authService.login(emailMinusculo, 'senha123');
+            const errorMaiusculo = authService.validateLoginInput(emailMaiusculo, 'senha123');
+            const errorMinusculo = authService.validateLoginInput(emailMinusculo, 'senha123');
             
-            // Ambos devem ser tratados da mesma forma
-            expect(resultMaiusculo).toBe(resultMinusculo);
+            // Ambos devem ser válidos
+            expect(errorMaiusculo).toBeNull();
+            expect(errorMinusculo).toBeNull();
         });
 
-        it('deve aceitar emails com subdomínios', async () => {
-            const result = await authService.login('user@sub.domain.com', 'senha123');
-            // O resultado pode ser null por não encontrar o usuário, mas não deve lançar erro
-            expect(() => result).not.toThrow();
+        it('deve aceitar emails com subdomínios', () => {
+            const error = authService.validateLoginInput('user@sub.domain.com', 'senha123');
+            expect(error).toBeNull();
         });
     });
 
     describe('Limites e restrições', () => {
-        it('deve aceitar senha com tamanho mínimo', async () => {
-            const senha = '123456'; // assumindo mínimo de 6 caracteres
-            const result = await authService.login('email@teste.com', senha);
-            // Apenas verificamos se retorna null por não encontrar o usuário
-            expect(result).toBeNull();
+        it('deve aceitar senha com tamanho mínimo', () => {
+            const senha = '123456'; // mínimo de 6 caracteres
+            const error = authService.validateLoginInput('email@teste.com', senha);
+            expect(error).toBeNull();
         });
 
-        it('deve aceitar senha com tamanho máximo', async () => {
+        it('deve aceitar senha com tamanho máximo', () => {
             const senha = 'a'.repeat(72); // limite máximo do bcrypt
-            const result = await authService.login('email@teste.com', senha);
-            // Apenas verificamos se retorna null por não encontrar o usuário
-            expect(result).toBeNull();
+            const error = authService.validateLoginInput('email@teste.com', senha);
+            expect(error).toBeNull();
         });
 
-        it('deve rejeitar senhas muito longas', async () => {
+        it('deve rejeitar senhas muito longas', () => {
             const senha = 'a'.repeat(73); // além do limite do bcrypt
-            const result = await authService.login('email@teste.com', senha);
-            expect(result).toBeNull();
+            const error = authService.validateLoginInput('email@teste.com', senha);
+            expect(error).toBe('Senha não pode ter mais que 72 caracteres');
         });
     });
 
-    describe('Tratamento de erros', () => {
-        it('deve lidar com caracteres especiais no email', async () => {
-            const result = await authService.login('user+test@domain.com', 'senha123');
-            // Apenas verificamos se retorna null por não encontrar o usuário
-            expect(result).toBeNull();
+    describe('Tratamento de caracteres especiais', () => {
+        it('deve aceitar caracteres especiais no email', () => {
+            const error = authService.validateLoginInput('user+test@domain.com', 'senha123');
+            expect(error).toBeNull();
         });
 
-        it('deve lidar com caracteres especiais na senha', async () => {
-            const result = await authService.login('email@teste.com', 'senha!@#$%¨&*()');
-            // Apenas verificamos se retorna null por não encontrar o usuário
-            expect(result).toBeNull();
+        it('deve aceitar caracteres especiais na senha', () => {
+            const error = authService.validateLoginInput('email@teste.com', 'senha!@#$%¨&*()');
+            expect(error).toBeNull();
         });
 
-        it('deve lidar com inputs muito longos', async () => {
+        it('deve rejeitar emails muito longos', () => {
             const emailLongo = 'a'.repeat(255) + '@teste.com';
-            const result = await authService.login(emailLongo, 'senha123');
-            expect(result).toBeNull();
+            const error = authService.validateLoginInput(emailLongo, 'senha123');
+            expect(error).toBe('Email não pode ter mais que 255 caracteres');
         });
     });
 });
