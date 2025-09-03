@@ -22,7 +22,7 @@ describe('AuthService.login', () => {
 
         it('deve validar quando email é inválido', () => {
             const error = authService.validateLoginInput('emailinvalido', 'senha123');
-            expect(error).toBe('Formato de email inválido');
+            expect(error).toBe('Invalid e-mail format');
         });
     });
 

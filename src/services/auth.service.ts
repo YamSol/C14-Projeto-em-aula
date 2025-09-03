@@ -29,7 +29,7 @@ export class AuthService {
     // Validação de formato de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return "Formato de email inválido";
+      return "Invalid e-mail format";
     }
 
     // Validação de tamanho
