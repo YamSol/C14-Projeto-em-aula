@@ -20,13 +20,13 @@ export class PatientController {
 
   async createPatient(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      const { name, age, condition } = req.body;
+      const { name, age, condition, transmitterId } = req.body;
       const photo = req.file;
 
-      if (!name || !age || !condition) {
+      if (!name || !age || !condition || !transmitterId) {
         res.status(400).json({
           success: false,
-          message: 'Nome, idade e condição são obrigatórios',
+          message: 'Nome, idade, condição e ID do transmissor são obrigatórios',
           data: null
         } as ApiResponse);
         return;
@@ -36,7 +36,8 @@ export class PatientController {
         name,
         age: parseInt(age),
         condition,
-        photo
+        photo,
+        transmitterId
       });
 
       res.status(201).json({
@@ -191,9 +192,9 @@ export class PatientController {
   async addVitalSigns(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
       const { id } = req.params;
-      const { heartRate, oxygenSat, temperature } = req.body;
-      
-      if (!heartRate || !oxygenSat || !temperature) {
+      const { transmitterId, heartRate, oxygenSaturation, temperature } = req.body;
+
+      if (!heartRate || !oxygenSaturation || !temperature) {
         res.status(400).json({
           success: false,
           message: 'Todos os sinais vitais são obrigatórios',
@@ -204,7 +205,7 @@ export class PatientController {
 
       await this.patientService.addVitalSigns(id, {
         heartRate,
-        oxygenSat,
+        oxygenSaturation,
         temperature
       });
       

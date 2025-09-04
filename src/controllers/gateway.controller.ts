@@ -26,7 +26,7 @@ export class GatewayController {
       const result = await this.patientService.addVitalSignsFromGateway({
         transmitterId: transmitter_id,
         heartRate: heart_rate,
-        oxygenSat: oxygen_level,
+        oxygenSaturation: oxygen_level,
         temperature: temperature
       });
 
