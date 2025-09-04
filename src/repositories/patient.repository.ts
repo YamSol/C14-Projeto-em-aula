@@ -59,8 +59,6 @@ export class PatientRepository {
   async addVitalSigns(patientId: string, vitalSignsData: {
     heartRate: number;
     oxygenSat: number;
-    systolic: number;
-    diastolic: number;
     temperature: number;
   }): Promise<VitalSigns> {
     // Also update the patient's last transmission and current vitals
@@ -73,8 +71,6 @@ export class PatientRepository {
         },
         currentHeartRate: vitalSignsData.heartRate,
         currentOxygenSat: vitalSignsData.oxygenSat,
-        currentSystolic: vitalSignsData.systolic,
-        currentDiastolic: vitalSignsData.diastolic,
         currentTemperature: vitalSignsData.temperature,
       },
     });

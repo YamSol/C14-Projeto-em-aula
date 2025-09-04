@@ -66,8 +66,6 @@ export class PatientService {
   async addVitalSigns(patientId: string, vitalSigns: {
     heartRate: number;
     oxygenSat: number;
-    systolic: number;
-    diastolic: number;
     temperature: number;
   }): Promise<void> {
     await this.patientRepository.addVitalSigns(patientId, vitalSigns);
@@ -85,15 +83,9 @@ export class PatientService {
       return { success: false, message: 'Paciente com o transmitter_id fornecido não encontrado.' };
     }
 
-    // Valores padrão para pressão arterial até implementar sensor
-    const defaultSystolic = 120;
-    const defaultDiastolic = 80;
-
     await this.patientRepository.addVitalSigns(patient.id, {
       heartRate: gatewayData.heartRate,
       oxygenSat: gatewayData.oxygenSat,
-      systolic: defaultSystolic,
-      diastolic: defaultDiastolic,
       temperature: gatewayData.temperature,
     });
 
@@ -113,10 +105,6 @@ export class PatientService {
         vitalSigns: {
           heartRate: record.heartRate,
           oxygenSaturation: record.oxygenSat,
-          bloodPressure: {
-            systolic: record.systolic,
-            diastolic: record.diastolic,
-          },
           temperature: record.temperature,
         }
       }))
@@ -127,10 +115,6 @@ export class PatientService {
     const currentVitalSigns: VitalSigns = {
       heartRate: patient.currentHeartRate ?? 0,
       oxygenSaturation: patient.currentOxygenSat ?? 0,
-      bloodPressure: {
-        systolic: patient.currentSystolic ?? 0,
-        diastolic: patient.currentDiastolic ?? 0,
-      },
       temperature: patient.currentTemperature ?? 0,
     };
 
