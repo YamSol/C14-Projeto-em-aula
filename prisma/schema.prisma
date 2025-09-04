@@ -36,25 +36,28 @@ model Patient {
   lastTransmission     DateTime  @default(now())
   
   // Current vital signs (latest reading)
-  currentHeartRate     Int?
-  currentOxygenSat     Int?
-  currentTemperature   Float?
+  currentHeartRate          Int?
+  currentOxygenSaturation   Int?
+  currentTemperature        Float?
   
   // Vital signs history
   vitalSigns           VitalSigns[]
+
+  // Associated transmission device
+  transmitterId        String?
   
   @@map("patients")
 }
 
 model VitalSigns {
-  id           String   @id @default(cuid())
-  patientId    String
-  heartRate    Int      // BPM
-  oxygenSat    Int      // %
-  temperature  Float    // Celsius
-  timestamp    DateTime @default(now())
+  id                  String   @id @default(cuid())
+  patientId           String
+  heartRate           Int      // BPM
+  oxygenSaturation    Int      // %
+  temperature         Float    // Celsius
+  timestamp           DateTime @default(now())
   
-  patient      Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  patient             Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
   
   @@map("vital_signs")
 }

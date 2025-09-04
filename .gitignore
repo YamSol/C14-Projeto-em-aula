@@ -3,5 +3,4 @@ dist/
 .env
 /src/generated/prisma
 prisma/dev.db
-prisma/migrations/
 uploads/

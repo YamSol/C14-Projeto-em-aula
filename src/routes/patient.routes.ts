@@ -26,6 +26,49 @@ router.use(authenticateToken);
 
 /**
  * @swagger
+ * /patients/transmitter/{transmitterId}:
+ *   get:
+ *     summary: Get patient ID by transmitter ID
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: transmitterId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID do dispositivo transmissor
+ *     responses:
+ *       200:
+ *         description: Patient ID found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Paciente encontrado"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     patientId:
+ *                       type: string
+ *                       example: "clp2xxx..."
+ *       404:
+ *         description: Patient not found for transmitter ID
+ *       400:
+ *         description: Transmitter ID is required
+ *       401:
+ *         description: Unauthorized
+ */
+router.get('/transmitter/:transmitterId', patientController.getUserByTransmitterId);
+
+/**
+ * @swagger
  * /patients:
  *   get:
  *     summary: Get all patients
@@ -59,6 +102,9 @@ router.get('/', patientController.getAllPatients);
  *                 type: integer
  *               condition:
  *                 type: string
+ *               transmitterId:
+ *                 type: string
+ *                 description: ID do dispositivo transmissor
  *               photo:
  *                 type: string
  *                 format: binary
@@ -220,13 +266,11 @@ router.get('/:id/stats', patientController.getPatientStats);
  *           schema:
  *             type: object
  *             properties:
+ *               transmitterId:
+ *                 type: string
  *               heartRate:
  *                 type: integer
- *               oxygenSat:
- *                 type: integer
- *               systolic:
- *                 type: integer
- *               diastolic:
+ *               oxygenSaturation:
  *                 type: integer
  *               temperature:
  *                 type: number

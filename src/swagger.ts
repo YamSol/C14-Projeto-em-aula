@@ -60,21 +60,6 @@ const options = {
               description: 'Saturação de oxigênio (%)',
               example: 98,
             },
-            bloodPressure: {
-              type: 'object',
-              properties: {
-                systolic: {
-                  type: 'integer',
-                  description: 'Pressão sistólica (mmHg)',
-                  example: 120,
-                },
-                diastolic: {
-                  type: 'integer',
-                  description: 'Pressão diastólica (mmHg)',
-                  example: 80,
-                },
-              },
-            },
             temperature: {
               type: 'number',
               format: 'float',
@@ -131,6 +116,11 @@ const options = {
               type: 'string',
               format: 'date-time',
               description: 'Data da última atualização',
+            },
+            transmitterId: {
+              type: 'string',
+              description: 'ID do dispositivo transmissor associado',
+              example: 'TR-001',
             },
             currentVitalSigns: {
               $ref: '#/components/schemas/VitalSigns',
