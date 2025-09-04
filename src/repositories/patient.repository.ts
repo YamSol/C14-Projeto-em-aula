@@ -9,6 +9,7 @@ export class PatientRepository {
     condition: string;
     photoUrl?: string;
     deviceId?: string;
+    transmitterId?: string;
   }): Promise<Patient> {
     return prisma.patient.create({
       data: patientData,
@@ -37,6 +38,12 @@ export class PatientRepository {
     });
   }
 
+  async findByTransmitterId(transmitterId: string): Promise<Patient | null> {
+    return prisma.patient.findFirst({
+      where: { transmitterId },
+    });
+  }
+
   async findByDeviceId(deviceId: string): Promise<Patient | null> {
     return prisma.patient.findUnique({
       where: { deviceId },
@@ -58,7 +65,7 @@ export class PatientRepository {
 
   async addVitalSigns(patientId: string, vitalSignsData: {
     heartRate: number;
-    oxygenSat: number;
+    oxygenSaturation: number;
     temperature: number;
   }): Promise<VitalSigns> {
     // Also update the patient's last transmission and current vitals
@@ -70,14 +77,16 @@ export class PatientRepository {
           increment: 1,
         },
         currentHeartRate: vitalSignsData.heartRate,
-        currentOxygenSat: vitalSignsData.oxygenSat,
+        currentOxygenSaturation: vitalSignsData.oxygenSaturation,
         currentTemperature: vitalSignsData.temperature,
       },
     });
 
     return prisma.vitalSigns.create({
       data: {
-        ...vitalSignsData,
+        heartRate: vitalSignsData.heartRate,
+        oxygenSaturation: vitalSignsData.oxygenSaturation,
+        temperature: vitalSignsData.temperature,
         patientId,
       },
     });
