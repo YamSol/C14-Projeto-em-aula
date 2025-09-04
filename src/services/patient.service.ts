@@ -74,24 +74,26 @@ export class PatientService {
   }
 
   async addVitalSignsFromGateway(gatewayData: {
-    deviceId: string;
+    transmitterId: string;
     heartRate: number;
     oxygenSat: number;
-    systolic: number;
-    diastolic: number;
     temperature: number;
   }): Promise<{ success: boolean; message: string }> {
-    const patient = await this.patientRepository.findByDeviceId(gatewayData.deviceId);
+    const patient = await this.patientRepository.findByDeviceId(gatewayData.transmitterId);
 
     if (!patient) {
-      return { success: false, message: 'Paciente com o deviceId fornecido não encontrado.' };
+      return { success: false, message: 'Paciente com o transmitter_id fornecido não encontrado.' };
     }
+
+    // Valores padrão para pressão arterial até implementar sensor
+    const defaultSystolic = 120;
+    const defaultDiastolic = 80;
 
     await this.patientRepository.addVitalSigns(patient.id, {
       heartRate: gatewayData.heartRate,
       oxygenSat: gatewayData.oxygenSat,
-      systolic: gatewayData.systolic,
-      diastolic: gatewayData.diastolic,
+      systolic: defaultSystolic,
+      diastolic: defaultDiastolic,
       temperature: gatewayData.temperature,
     });
 

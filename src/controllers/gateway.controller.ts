@@ -12,23 +12,21 @@ export class GatewayController {
 
   async submitVitalSigns(req: Request, res: Response): Promise<void> {
     try {
-      const { device_id, heart_rate, oxygen_level, systolic, diastolic, temperature } = req.body;
+      const { transmitter_id, heart_rate, oxygen_level, temperature } = req.body;
 
-      if (!device_id || !heart_rate || !oxygen_level || !systolic || !diastolic || !temperature) {
+      if (!transmitter_id || !heart_rate || !oxygen_level || !temperature) {
         res.status(400).json({
           success: false,
-          message: 'Dados incompletos. Todos os campos são obrigatórios.',
+          message: 'Dados incompletos. Os campos transmitter_id, heart_rate, oxygen_level e temperature são obrigatórios.',
           data: null
         } as ApiResponse);
         return;
       }
 
       const result = await this.patientService.addVitalSignsFromGateway({
-        deviceId: device_id,
+        transmitterId: transmitter_id,
         heartRate: heart_rate,
         oxygenSat: oxygen_level,
-        systolic: systolic,
-        diastolic: diastolic,
         temperature: temperature
       });
 
