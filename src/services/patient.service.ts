@@ -115,7 +115,6 @@ export class PatientService {
       return {
         heartRate: 0,
         oxygenSaturation: 0,
-        bloodPressure: { systolic: 0, diastolic: 0 },
         temperature: 0,
       };
     }
@@ -123,14 +122,11 @@ export class PatientService {
     const totals = relevantRecords.reduce((acc, record) => {
       acc.heartRate += record.heartRate;
       acc.oxygenSaturation += record.oxygenSat;
-      acc.bloodPressure.systolic += record.systolic;
-      acc.bloodPressure.diastolic += record.diastolic;
       acc.temperature += record.temperature;
       return acc;
     }, {
       heartRate: 0,
       oxygenSaturation: 0,
-      bloodPressure: { systolic: 0, diastolic: 0 },
       temperature: 0,
     });
 
@@ -139,10 +135,6 @@ export class PatientService {
     return {
       heartRate: totals.heartRate / count,
       oxygenSaturation: totals.oxygenSaturation / count,
-      bloodPressure: {
-        systolic: totals.bloodPressure.systolic / count,
-        diastolic: totals.bloodPressure.diastolic / count,
-      },
       temperature: totals.temperature / count,
     };
   }
