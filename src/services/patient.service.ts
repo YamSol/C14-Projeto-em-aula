@@ -151,6 +151,7 @@ export class PatientService {
     return {
       patientId,
       data: history.map(record => ({
+        id: record.id,
         timestamp: record.timestamp.toISOString(),
         vitalSigns: {
           heartRate: record.heartRate,

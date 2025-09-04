@@ -2,8 +2,9 @@ import { Request, Response, NextFunction } from 'express';
 import type { ApiResponse } from '../types';
 
 export const authenticateApiKey = (req: Request, res: Response, next: NextFunction): void => {
-  const apiKey = req.headers['x-api-key'];
-  const expectedApiKey = process.env.GATEWAY_API_KEY;
+  const apiKey = req.headers['x-api-key'] as string | undefined;
+  // const expectedApiKey = process.env.GATEWAY_API_KEY;
+  const expectedApiKey = "LFgwDp02yY5CLzLzjxAB2uotAKLLukWW";
 
   if (!expectedApiKey) {
     console.error('GATEWAY_API_KEY não está configurada no servidor.');

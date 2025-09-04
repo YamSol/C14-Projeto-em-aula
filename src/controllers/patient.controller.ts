@@ -130,7 +130,7 @@ export class PatientController {
   async deletePatient(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
       const { id } = req.params;
-      
+
       await this.patientService.deletePatient(id);
       
       res.status(200).json({
