@@ -224,10 +224,6 @@ router.get('/:id/stats', patientController.getPatientStats);
  *                 type: integer
  *               oxygenSat:
  *                 type: integer
- *               systolic:
- *                 type: integer
- *               diastolic:
- *                 type: integer
  *               temperature:
  *                 type: number
  *     responses:

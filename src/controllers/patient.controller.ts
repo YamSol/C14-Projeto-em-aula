@@ -191,9 +191,9 @@ export class PatientController {
   async addVitalSigns(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
       const { id } = req.params;
-      const { heartRate, oxygenSat, systolic, diastolic, temperature } = req.body;
+      const { heartRate, oxygenSat, temperature } = req.body;
       
-      if (!heartRate || !oxygenSat || !systolic || !diastolic || !temperature) {
+      if (!heartRate || !oxygenSat || !temperature) {
         res.status(400).json({
           success: false,
           message: 'Todos os sinais vitais são obrigatórios',
