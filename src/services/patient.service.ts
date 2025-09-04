@@ -69,6 +69,16 @@ export class PatientService {
     await this.patientRepository.addVitalSigns(patientId, vitalSigns);
   }
 
+  async getUserByTransmitterId(transmitterId: string): Promise<{patientId: string} | null> {
+    const patient = await this.patientRepository.findByTransmitterIdWithIdOnly(transmitterId);
+    
+    if (!patient) {
+      return null;
+    }
+
+    return { patientId: patient.id };
+  }
+
   async addVitalSignsFromGateway(gatewayData: VitalSignsGatewayData): Promise<{ success: boolean; message: string }> {
     const patient = await this.patientRepository.findByTransmitterId(gatewayData.transmitterId);
 

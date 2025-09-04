@@ -16,6 +16,7 @@ export class PatientController {
     this.getPatientHistory = this.getPatientHistory.bind(this);
     this.getPatientStats = this.getPatientStats.bind(this);
     this.addVitalSigns = this.addVitalSigns.bind(this);
+    this.getUserByTransmitterId = this.getUserByTransmitterId.bind(this);
   }
 
   async createPatient(req: AuthenticatedRequest, res: Response): Promise<void> {
@@ -216,6 +217,45 @@ export class PatientController {
       } as ApiResponse);
     } catch (error) {
       console.error('Add vital signs error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erro interno do servidor',
+        data: null
+      } as ApiResponse);
+    }
+  }
+
+  async getUserByTransmitterId(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const { transmitterId } = req.params;
+
+      if (!transmitterId) {
+        res.status(400).json({
+          success: false,
+          message: 'Transmitter ID é obrigatório',
+          data: null
+        } as ApiResponse);
+        return;
+      }
+
+      const result = await this.patientService.getUserByTransmitterId(transmitterId);
+      
+      if (!result) {
+        res.status(404).json({
+          success: false,
+          message: 'Paciente não encontrado para o transmitter ID fornecido',
+          data: null
+        } as ApiResponse);
+        return;
+      }
+
+      res.status(200).json({
+        success: true,
+        message: 'Paciente encontrado',
+        data: result
+      } as ApiResponse);
+    } catch (error) {
+      console.error('Get user by transmitter ID error:', error);
       res.status(500).json({
         success: false,
         message: 'Erro interno do servidor',

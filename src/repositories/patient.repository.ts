@@ -44,6 +44,13 @@ export class PatientRepository {
     });
   }
 
+  async findByTransmitterIdWithIdOnly(transmitterId: string): Promise<{id: string} | null> {
+    return prisma.patient.findFirst({
+      where: { transmitterId },
+      select: { id: true }
+    });
+  }
+
   async findByDeviceId(deviceId: string): Promise<Patient | null> {
     return prisma.patient.findUnique({
       where: { deviceId },
