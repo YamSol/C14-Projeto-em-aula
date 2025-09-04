@@ -1,6 +1,6 @@
 import { PatientRepository } from '../repositories/patient.repository';
 import type { Patient, VitalSigns as VitalSignsData } from '@prisma/client';
-import type { PatientResponse, VitalSigns, PatientStats, VitalSignsHistoryPoint } from '../types';
+import type { PatientResponse, VitalSigns, PatientStats, VitalSignsHistoryPoint, VitalSignsGatewayData } from '../types';
 import path from 'path';
 import fs from 'fs/promises';
 
@@ -17,6 +17,7 @@ export class PatientService {
     condition: string;
     photo?: Express.Multer.File;
     deviceId?: string;
+    transmitterId?: string;
   }): Promise<PatientResponse> {
     let photoUrl: string | undefined;
 
@@ -37,6 +38,7 @@ export class PatientService {
       condition: data.condition,
       photoUrl,
       deviceId: data.deviceId,
+      transmitterId: data.transmitterId,
     });
 
     return this.formatPatientResponse(patient);
@@ -63,21 +65,12 @@ export class PatientService {
     await this.patientRepository.delete(id);
   }
 
-  async addVitalSigns(patientId: string, vitalSigns: {
-    heartRate: number;
-    oxygenSat: number;
-    temperature: number;
-  }): Promise<void> {
+  async addVitalSigns(patientId: string, vitalSigns: VitalSigns): Promise<void> {
     await this.patientRepository.addVitalSigns(patientId, vitalSigns);
   }
 
-  async addVitalSignsFromGateway(gatewayData: {
-    transmitterId: string;
-    heartRate: number;
-    oxygenSat: number;
-    temperature: number;
-  }): Promise<{ success: boolean; message: string }> {
-    const patient = await this.patientRepository.findByDeviceId(gatewayData.transmitterId);
+  async addVitalSignsFromGateway(gatewayData: VitalSignsGatewayData): Promise<{ success: boolean; message: string }> {
+    const patient = await this.patientRepository.findByTransmitterId(gatewayData.transmitterId);
 
     if (!patient) {
       return { success: false, message: 'Paciente com o transmitter_id fornecido não encontrado.' };
@@ -85,8 +78,8 @@ export class PatientService {
 
     await this.patientRepository.addVitalSigns(patient.id, {
       heartRate: gatewayData.heartRate,
-      oxygenSat: gatewayData.oxygenSat,
-      temperature: gatewayData.temperature,
+      oxygenSaturation: gatewayData.oxygenSaturation,
+      temperature: gatewayData.temperature
     });
 
     return { success: true, message: 'Sinais vitais adicionados com sucesso.' };
@@ -121,7 +114,7 @@ export class PatientService {
 
     const totals = relevantRecords.reduce((acc, record) => {
       acc.heartRate += record.heartRate;
-      acc.oxygenSaturation += record.oxygenSat;
+      acc.oxygenSaturation += record.oxygenSaturation;
       acc.temperature += record.temperature;
       return acc;
     }, {
@@ -151,7 +144,7 @@ export class PatientService {
         timestamp: record.timestamp.toISOString(),
         vitalSigns: {
           heartRate: record.heartRate,
-          oxygenSaturation: record.oxygenSat,
+          oxygenSaturation: record.oxygenSaturation,
           temperature: record.temperature,
         }
       }))
@@ -161,7 +154,7 @@ export class PatientService {
   private formatPatientResponse(patient: Patient & { vitalSigns?: VitalSignsData[] }): PatientResponse {
     const currentVitalSigns: VitalSigns = {
       heartRate: patient.currentHeartRate ?? 0,
-      oxygenSaturation: patient.currentOxygenSat ?? 0,
+      oxygenSaturation: patient.currentOxygenSaturation ?? 0,
       temperature: patient.currentTemperature ?? 0,
     };
 
