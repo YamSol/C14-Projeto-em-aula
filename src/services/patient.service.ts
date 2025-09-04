@@ -92,6 +92,61 @@ export class PatientService {
     return { success: true, message: 'Sinais vitais adicionados com sucesso.' };
   }
 
+  async getPatientStats(patientId: string): Promise<PatientStats> {
+    const history = await this.patientRepository.getVitalSignsHistory(patientId, 100);
+
+    const last24h = this.calculateAverageVitalSigns(history, 24);
+    const last7days = this.calculateAverageVitalSigns(history, 7);
+    const lastMonth = this.calculateAverageVitalSigns(history, 30);
+
+    return {
+      averages: {
+        last24h,
+        last7days,
+        lastMonth,
+      },
+    };
+  }
+  private calculateAverageVitalSigns(history: VitalSignsData[], hours: number): VitalSigns {
+    const cutoff = new Date(Date.now() - hours * 60 * 60 * 1000);
+    const relevantRecords = history.filter(record => record.timestamp >= cutoff);
+
+    if (relevantRecords.length === 0) {
+      return {
+        heartRate: 0,
+        oxygenSaturation: 0,
+        bloodPressure: { systolic: 0, diastolic: 0 },
+        temperature: 0,
+      };
+    }
+
+    const totals = relevantRecords.reduce((acc, record) => {
+      acc.heartRate += record.heartRate;
+      acc.oxygenSaturation += record.oxygenSat;
+      acc.bloodPressure.systolic += record.systolic;
+      acc.bloodPressure.diastolic += record.diastolic;
+      acc.temperature += record.temperature;
+      return acc;
+    }, {
+      heartRate: 0,
+      oxygenSaturation: 0,
+      bloodPressure: { systolic: 0, diastolic: 0 },
+      temperature: 0,
+    });
+
+    const count = relevantRecords.length;
+
+    return {
+      heartRate: totals.heartRate / count,
+      oxygenSaturation: totals.oxygenSaturation / count,
+      bloodPressure: {
+        systolic: totals.bloodPressure.systolic / count,
+        diastolic: totals.bloodPressure.diastolic / count,
+      },
+      temperature: totals.temperature / count,
+    };
+  }
+
   async getPatientHistory(patientId: string): Promise<{
     patientId: string;
     data: VitalSignsHistoryPoint[];

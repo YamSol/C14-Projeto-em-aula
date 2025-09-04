@@ -60,12 +60,11 @@ export class AuthController {
         path: '/',
       });
 
-      // Retorna apenas os dados do usuário, não o token
       res.status(200).json({
         success: true,
         message: 'Login realizado com sucesso',
-        data: { user: result.user }
-      } as ApiResponse<Omit<LoginResponse, 'token'>>);
+        data: { user: result.user, token: result.token }
+      } as ApiResponse<LoginResponse>);
     } 
     catch (error) {
       // Como o service não lança exceções relacionadas a validação,
