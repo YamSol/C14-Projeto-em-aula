@@ -205,8 +205,6 @@ export class PatientController {
       await this.patientService.addVitalSigns(id, {
         heartRate,
         oxygenSat,
-        systolic,
-        diastolic,
         temperature
       });
       

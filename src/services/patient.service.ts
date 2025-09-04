@@ -66,32 +66,26 @@ export class PatientService {
   async addVitalSigns(patientId: string, vitalSigns: {
     heartRate: number;
     oxygenSat: number;
-    systolic: number;
-    diastolic: number;
     temperature: number;
   }): Promise<void> {
     await this.patientRepository.addVitalSigns(patientId, vitalSigns);
   }
 
   async addVitalSignsFromGateway(gatewayData: {
-    deviceId: string;
+    transmitterId: string;
     heartRate: number;
     oxygenSat: number;
-    systolic: number;
-    diastolic: number;
     temperature: number;
   }): Promise<{ success: boolean; message: string }> {
-    const patient = await this.patientRepository.findByDeviceId(gatewayData.deviceId);
+    const patient = await this.patientRepository.findByDeviceId(gatewayData.transmitterId);
 
     if (!patient) {
-      return { success: false, message: 'Paciente com o deviceId fornecido não encontrado.' };
+      return { success: false, message: 'Paciente com o transmitter_id fornecido não encontrado.' };
     }
 
     await this.patientRepository.addVitalSigns(patient.id, {
       heartRate: gatewayData.heartRate,
       oxygenSat: gatewayData.oxygenSat,
-      systolic: gatewayData.systolic,
-      diastolic: gatewayData.diastolic,
       temperature: gatewayData.temperature,
     });
 
@@ -166,10 +160,6 @@ export class PatientService {
         vitalSigns: {
           heartRate: record.heartRate,
           oxygenSaturation: record.oxygenSat,
-          bloodPressure: {
-            systolic: record.systolic,
-            diastolic: record.diastolic,
-          },
           temperature: record.temperature,
         }
       }))
@@ -180,10 +170,6 @@ export class PatientService {
     const currentVitalSigns: VitalSigns = {
       heartRate: patient.currentHeartRate ?? 0,
       oxygenSaturation: patient.currentOxygenSat ?? 0,
-      bloodPressure: {
-        systolic: patient.currentSystolic ?? 0,
-        diastolic: patient.currentDiastolic ?? 0,
-      },
       temperature: patient.currentTemperature ?? 0,
     };
 

@@ -1,10 +1,6 @@
 export interface VitalSigns {
   heartRate: number;
   oxygenSaturation: number;
-  bloodPressure: {
-    systolic: number;
-    diastolic: number;
-  };
   temperature: number;
 }
 
