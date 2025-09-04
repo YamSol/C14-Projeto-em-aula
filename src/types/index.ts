@@ -4,11 +4,19 @@ export interface VitalSigns {
   temperature: number;
 }
 
+export interface VitalSignsGatewayData {
+  transmitterId: string;
+  heartRate: number;
+  oxygenSaturation: number;
+  temperature: number;
+}
+
 export interface PatientCreateData {
   name: string;
   age: number;
   condition: string;
   photo?: Express.Multer.File;
+  transmitterId?: string;
 }
 
 export interface PatientResponse {
