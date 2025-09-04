@@ -59,6 +59,9 @@ router.get('/', patientController.getAllPatients);
  *                 type: integer
  *               condition:
  *                 type: string
+ *               transmitterId:
+ *                 type: string
+ *                 description: ID do dispositivo transmissor
  *               photo:
  *                 type: string
  *                 format: binary
@@ -220,9 +223,11 @@ router.get('/:id/stats', patientController.getPatientStats);
  *           schema:
  *             type: object
  *             properties:
+ *               transmitterId:
+ *                 type: string
  *               heartRate:
  *                 type: integer
- *               oxygenSat:
+ *               oxygenSaturation:
  *                 type: integer
  *               temperature:
  *                 type: number

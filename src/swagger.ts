@@ -117,6 +117,11 @@ const options = {
               format: 'date-time',
               description: 'Data da última atualização',
             },
+            transmitterId: {
+              type: 'string',
+              description: 'ID do dispositivo transmissor associado',
+              example: 'TR-001',
+            },
             currentVitalSigns: {
               $ref: '#/components/schemas/VitalSigns',
             },
